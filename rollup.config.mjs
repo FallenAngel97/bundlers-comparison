@@ -1,10 +1,11 @@
 import { babel } from "@rollup/plugin-babel";
 import { nodeResolve } from "@rollup/plugin-node-resolve";
+import { terser } from "rollup-plugin-terser";
 import commonjs from "@rollup/plugin-commonjs";
 import replace from "@rollup/plugin-replace";
 
 export default {
-	input: "src/index.js",
+	input: "src/index.jsx",
 	output: {
 		file: "dist/rollup-bundle.js",
 		format: "iife",
@@ -36,5 +37,11 @@ export default {
 				["@babel/preset-react", { runtime: "automatic" }],
 			],
 		}),
+		terser(),
 	],
+	treeshake: {
+    moduleSideEffects: false,
+    propertyReadSideEffects: false,
+    tryCatchDeoptimization: false
+  }
 };
