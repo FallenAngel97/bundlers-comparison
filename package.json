@@ -1,13 +1,16 @@
 {
   "name": "bundlers-comparison",
   "version": "1.0.0",
-  "main": "src/index.js",
   "license": "'",
   "scripts": {
     "build:webpack": "webpack",
     "build:rollup": "rollup -c",
     "build:esbuild": "esbuild src/index.jsx --legal-comments=none --jsx=automatic --bundle --minify --outfile=dist/esbuild-bundle.js",
-    "build:farm": "farm build"
+    "build:farm": "farm build",
+    "build:rspack": "rspack build",
+    "build:parcel": "parcel build",
+    "build:snowpack": "snowpack build --polyfill-node",
+    "build:rolldown": "rolldown -c"
   },
   "dependencies": {
     "react": "^19.1.1",
@@ -21,14 +24,20 @@
     "@farmfe/core": "^1.6.7",
     "@farmfe/plugin-react": "^1.2.0",
     "@rollup/plugin-babel": "^6.0.4",
-    "@rollup/plugin-commonjs": "^28.0.6",
+    "@rollup/plugin-commonjs": "^29.0.0",
     "@rollup/plugin-node-resolve": "^16.0.1",
     "@rollup/plugin-replace": "^6.0.2",
+    "@rspack/cli": "^1.7.6",
+    "@rspack/core": "^1.7.6",
     "babel-loader": "^10.0.0",
-    "esbuild": "^0.25.9",
+    "esbuild": "^0.27.3",
+    "parcel": "^2.16.4",
+    "rolldown": "^1.0.0-rc.6",
     "rollup": "^4.48.0",
     "rollup-plugin-terser": "^7.0.2",
-    "terser-webpack-plugin": "^5.3.14",
+    "serve": "^14.2.5",
+    "snowpack": "^3.8.8",
+    "terser-webpack-plugin": "^5.3.16",
     "typescript": "^5.9.2",
     "webpack": "^5.101.3",
     "webpack-cli": "^6.0.1"
