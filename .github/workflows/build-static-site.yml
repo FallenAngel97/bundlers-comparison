@@ -7,61 +7,57 @@ jobs:
   benchmark:
     runs-on: ubuntu-latest
 
-    strategy:
-      fail-fast: false
-      matrix:
-        entry:
-          - '{"script":"build:esbuild","log":"esbuild"}'
-          - '{"script":"build:rollup","log":"rollup"}'
-          - '{"script":"build:webpack","log":"webpack"}'
-          - '{"script":"build:farm","log":"farm"}'
-          - '{"script":"build:rspack","log":"rspack"}'
-          - '{"script":"build:parcel","log":"parcel"}'
-          - '{"script":"build:snowpack","log":"snowpack"}'
-          - '{"script":"build:rolldown","log":"rolldown"}'
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Set up Node
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: 20
 
-      - name: Install dependencies
-        run: yarn install --frozen-lockfile
+      - run: yarn install --frozen-lockfile
 
-      - name: Prepare log directory
-        run: mkdir -p time
+      - run: mkdir -p time
 
-      - name: Add Parcel source field if needed
-        if: contains(matrix.entry, 'build:parcel')
-        run: |
-          echo "Adding \"source\": \"index.html\" to package.json for Parcel"
-          jq '. + {source: "index.html"}' package.json > package.tmp.json
-          mv package.tmp.json package.json
-
-      - name: Run benchmark loop
+      - name: Run all bundler benchmarks
         shell: bash
         run: |
-          DATA=$(echo '${{ matrix.entry }}' | jq -r '.')
-          SCRIPT=$(echo "$DATA" | jq -r '.script')
-          LOG=$(echo "$DATA" | jq -r '.log')
+          run_benchmark() {
+            SCRIPT=$1
+            LOG=$2
 
-          LOGFILE="time/$LOG.log"
-          echo "Writing results to $LOGFILE"
-          echo "=== Benchmark: $SCRIPT ===" > "$LOGFILE"
+            echo "=== Benchmark: $SCRIPT ===" > "time/$LOG.log"
 
-          for i in {1..10}; do
-            echo "Run #$i" | tee -a "$LOGFILE"
+            # Parcel needs "source": "index.html"
+            if [[ "$SCRIPT" == "build:parcel" ]]; then
+              echo "Adding Parcel source field to package.json"
+              jq '. + {source: "index.html"}' package.json > package.tmp.json
+              mv package.tmp.json package.json
+            fi
 
-            /usr/bin/time -v yarn $SCRIPT 2>&1 | awk '
-              /Maximum resident set size/ {ram=$6/1024}
-              /Percent of CPU this job got/ {cpu=$0; sub(/.*: /,"",cpu)}
-              END {printf "Peak RAM: %.2f MB\nCPU Load: %s\n", ram, cpu}' \
-              | tee -a "$LOGFILE"
+            for i in {1..10}; do
+              echo "Run #$i" >> "time/$LOG.log"
 
-            echo "----------------------------------------" | tee -a "$LOGFILE"
-          done
+              /usr/bin/time -v yarn $SCRIPT 2>&1 | awk '
+                /Maximum resident set size/ {ram=$6/1024}
+                /Percent of CPU this job got/ {cpu=$0; sub(/.*: /,"",cpu)}
+                END {printf "Peak RAM: %.2f MB\nCPU Load: %s\n", ram, cpu}' \
+                >> "time/$LOG.log"
+
+              echo "----------------------------------------" >> "time/$LOG.log"
+            done
+          }
+
+          run_benchmark build:esbuild esbuild
+          run_benchmark build:rollup rollup
+          run_benchmark build:webpack webpack
+          run_benchmark build:farm farm
+          run_benchmark build:rspack rspack
+          run_benchmark build:parcel parcel
+          run_benchmark build:snowpack snowpack
+          run_benchmark build:rolldown rolldown
+
+          cd my-app 
+          yarn install --frozen-lockfile 
+          yarn build
+
 
