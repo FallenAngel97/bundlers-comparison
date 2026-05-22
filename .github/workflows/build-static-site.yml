@@ -35,6 +35,13 @@ jobs:
       - name: Prepare log directory
         run: mkdir -p time
 
+      - name: Add Parcel source field if needed
+        if: contains(matrix.entry, 'build:parcel')
+        run: |
+          echo "Adding \"source\": \"index.html\" to package.json for Parcel"
+          jq '. + {source: "index.html"}' package.json > package.tmp.json
+          mv package.tmp.json package.json
+
       - name: Run benchmark loop
         shell: bash
         run: |
