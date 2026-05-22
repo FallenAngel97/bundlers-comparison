@@ -1,0 +1,56 @@
+name: Benchmark Bundlers
+
+on:
+  workflow_dispatch:
+
+jobs:
+  benchmark:
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        build:
+          - build:esbuild
+          - build:rollup
+          - build:webpack
+          - build:farm
+          - build:rspack
+          - build:parcel
+          - build:snowpack
+          - build:rolldown
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Prepare log directory
+        run: mkdir -p time
+
+      - name: Run benchmark loop for ${{ matrix.build }}
+        shell: bash
+        run: |
+          LOGFILE="time/${{ matrix.build#build: }}.log"
+          echo "Writing results to $LOGFILE"
+          echo "=== Benchmark: ${{ matrix.build }} ===" > "$LOGFILE"
+
+          for i in {1..10}; do
+            echo "Run #$i" | tee -a "$LOGFILE"
+
+            /usr/bin/time -v yarn ${{ matrix.build }} 2>&1 | awk '
+              /Maximum resident set size/ {ram=$6/1024}
+              /Percent of CPU this job got/ {cpu=$0; sub(/.*: /,"",cpu)}
+              END {printf "Peak RAM: %.2f MB\nCPU Load: %s\n", ram, cpu}' \
+              | tee -a "$LOGFILE"
+
+            echo "----------------------------------------" | tee -a "$LOGFILE"
+          done
+
