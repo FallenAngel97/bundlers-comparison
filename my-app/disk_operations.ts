@@ -1,8 +1,12 @@
 import { readdirSync, readFileSync } from 'fs';
+import { join } from 'path';
 
 import { devDependencies } from '../package.json';
 
-const dirContents = readdirSync('../time');
+const timeDir = join(process.cwd(), "../time");
+const dirContents = readdirSync(timeDir);
+
+console.log({ dirContents });
 
 export type ToolTableProps = {
 	title: string;
