@@ -21,6 +21,7 @@ const SharedResults = () => {
 }
 
 const SingleToolTable = ({ title, stats, version, dependencies }: ToolTableProps) => {
+	console.log({ title });
 	return (
 		<div>
 			<h2>{title.replace(".log", "")} v{version.replace("~", "").replace("^", "")}</h2>
