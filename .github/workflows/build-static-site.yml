@@ -25,8 +25,6 @@ jobs:
             SCRIPT=$1
             LOG=$2
 
-            echo "=== Benchmark: $SCRIPT ===" > "time/$LOG.log"
-
             # Parcel needs "source": "index.html"
             if [[ "$SCRIPT" == "build:parcel" ]]; then
               echo "Adding Parcel source field to package.json"
@@ -42,8 +40,6 @@ jobs:
                 /Percent of CPU this job got/ {cpu=$0; sub(/.*: /,"",cpu)}
                 END {printf "Peak RAM: %.2f MB\nCPU Load: %s\n", ram, cpu}' \
                 >> "time/$LOG.log"
-
-              echo "----------------------------------------" >> "time/$LOG.log"
             done
           }
 
