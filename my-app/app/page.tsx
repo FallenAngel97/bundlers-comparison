@@ -1,4 +1,3 @@
-import { Table } from 'antd';
 //import { calculateTotalDeps,  ToolTableProps } from '../disk_operations';
 //
 const columns = [
@@ -29,7 +28,6 @@ const SingleToolTable = ({ title, stats, version, dependencies }: any) => {
 	return (
 		<div>
 			<h2>{title.replace(".log", "")} v{version.replace("~", "").replace("^", "")}</h2>
-			<Table columns={columns} dataSource={stats} />
 		</div>
 	);
 }
