@@ -49,6 +49,7 @@ function convertStringToStats(statsString: string): ToolTableProps['stats'] {
 }
 
 function getDependenciesOfPackage(packageName: keyof typeof devDependencies) {
+	console.log({ devDependencies })
 	let depName = '';
   if (devDependencies[packageName]) {
     depName = packageName;
@@ -56,7 +57,7 @@ function getDependenciesOfPackage(packageName: keyof typeof devDependencies) {
 		// Try fuzzy match (handles @scoped packages)
 		depName = Object.entries(devDependencies).find(([dep]) =>
 			dep.toLowerCase().includes(packageName)
-		)?.toString() || '';
+		)?.toString().split(',')[0] || '';
 	}
 	const dependencyPackageJSON = JSON.parse(readFileSync(`../node_modules/${depName}/package.json`).toString());
 	return dependencyPackageJSON;
