@@ -1,4 +1,4 @@
-//import { calculateTotalDeps,  ToolTableProps } from '../disk_operations';
+import { calculateTotalDeps, ToolTableProps, metricsParsed } from '../disk_operations';
 //
 const columns = [
   {
@@ -19,9 +19,6 @@ const SharedResults = () => {
 	);
 }
 
-const metricsParsed= [
-	{title: '', stats: {}, version: '', dependencies: {}}
-]
 
 const SingleToolTable = ({ title, stats, version, dependencies }: any) => {
 	console.log({ title });
