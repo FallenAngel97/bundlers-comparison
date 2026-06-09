@@ -16,7 +16,6 @@ export type ToolTableProps = {
 }
 
 function findToolVersion(fileName: string) {
-	console.log({ fileName });
   const base = fileName.replace(".log", "").toLowerCase() as keyof typeof devDependencies;
 
   // Try exact match first
@@ -49,7 +48,6 @@ function convertStringToStats(statsString: string): ToolTableProps['stats'] {
 }
 
 function getDependenciesOfPackage(packageName: keyof typeof devDependencies) {
-	console.log({ devDependencies })
 	let depName = '';
   if (devDependencies[packageName]) {
     depName = packageName;
