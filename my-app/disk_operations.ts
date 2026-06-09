@@ -6,8 +6,6 @@ import { devDependencies } from '../package.json';
 const timeDir = join(process.cwd(), "../time");
 const dirContents = readdirSync(timeDir);
 
-console.log({ dirContents });
-
 export type ToolTableProps = {
 	title: string;
 	dependencies: Record<any, any>;
@@ -35,7 +33,6 @@ function convertStringToStats(statsString: string): ToolTableProps['stats'] {
 	const cleanedStats = statsString.split("\n").filter(n => n!="");
 
   const stats: ToolTableProps['stats'] = [];
-	console.log({ cleanedStats });
 
   for (let i = 0; i < cleanedStats.length; i += 2) {
     const ramLine = cleanedStats[i].replace("Peak RAM: ", "");
