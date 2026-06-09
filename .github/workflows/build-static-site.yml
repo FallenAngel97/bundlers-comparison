@@ -55,9 +55,14 @@ jobs:
           cd my-app 
           yarn install --frozen-lockfile 
           yarn build
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./,next   # or .next if using next export
 
 
   deploy:
+    needs: benchmark
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
