@@ -16,6 +16,7 @@ export type ToolTableProps = {
 }
 
 function findToolVersion(fileName: string) {
+	console.log({ fileName });
   const base = fileName.replace(".log", "").toLowerCase() as keyof typeof devDependencies;
 
   // Try exact match first
@@ -35,6 +36,7 @@ function convertStringToStats(statsString: string): ToolTableProps['stats'] {
 	const cleanedStats = statsString.split("\n").filter(n => n!="");
 
   const stats: ToolTableProps['stats'] = [];
+	console.log({ cleanedStats });
 
   for (let i = 0; i < cleanedStats.length; i += 2) {
     const ramLine = cleanedStats[i].replace("Peak RAM: ", "");
