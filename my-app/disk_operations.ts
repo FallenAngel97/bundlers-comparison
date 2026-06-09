@@ -54,10 +54,9 @@ function getDependenciesOfPackage(packageName: keyof typeof devDependencies) {
     depName = packageName;
   } else {
 		// Try fuzzy match (handles @scoped packages)
-		depName ='';
-		console.log(Object.entries(devDependencies).find(([dep]) =>
+		depName = Object.entries(devDependencies).find(([dep]) =>
 			dep.toLowerCase().includes(packageName)
-		));
+		)?.toString() || '';
 	}
 	const dependencyPackageJSON = JSON.parse(readFileSync(`../node_modules/${depName}/package.json`).toString());
 	return dependencyPackageJSON;
