@@ -42,8 +42,9 @@ jobs:
 
               /usr/bin/time -v yarn $SCRIPT 2>&1 | awk '
                 /Maximum resident set size/ {ram=$6/1024}
+                /Elapsed \(wall clock\) time/ {seconds=$0; sub(/.*: /,"",seconds)}
                 /Percent of CPU this job got/ {cpu=$0; sub(/.*: /,"",cpu)}
-                END {printf "Peak RAM: %.2f MB\nCPU Load: %s\n", ram, cpu}' \
+                END {printf "Peak RAM: %.2f MB\nCPU Load: %s\nSeconds: %s\n", ram, cpu, seconds}' \
                 >> "time/$LOG.log"
             done
           }
