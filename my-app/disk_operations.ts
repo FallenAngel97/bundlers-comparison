@@ -10,7 +10,7 @@ export type ToolTableProps = {
 	title: string;
 	dependencies: Record<any, any>;
 	version: string;
-	stats: Record<'cpu'|'ram', string>[]
+	stats: Record<'cpu'|'ram'|'seconds', string>[]
 }
 
 function findToolVersion(fileName: string) {
@@ -34,11 +34,12 @@ function convertStringToStats(statsString: string): ToolTableProps['stats'] {
 
   const stats: ToolTableProps['stats'] = [];
 
-  for (let i = 0; i < cleanedStats.length; i += 2) {
+  for (let i = 0; i < cleanedStats.length; i += 3) {
     const ramLine = cleanedStats[i].replace("Peak RAM: ", "");
     const cpuLine = cleanedStats[i + 1].replace("CPU Load: ", "");
+		const seconds = cleanedStats[i + 2].replace("Seconds: ", "");
 
-    stats.push({ ram: ramLine, cpu: cpuLine });
+    stats.push({ ram: ramLine, cpu: cpuLine, seconds });
   }
 
   return stats;

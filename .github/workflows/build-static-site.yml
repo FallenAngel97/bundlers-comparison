@@ -37,9 +37,8 @@ jobs:
               mv package.tmp.json package.json
             fi
 
+            touch time/$LOG.log
             for i in {1..10}; do
-              echo "Run #$i" >> "time/$LOG.log"
-
               /usr/bin/time -v yarn $SCRIPT 2>&1 | awk '
                 /Maximum resident set size/ {ram=$6/1024}
                 /Elapsed \(wall clock\) time/ {seconds=$0; sub(/.*: /,"",seconds)}
