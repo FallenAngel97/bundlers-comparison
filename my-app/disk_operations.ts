@@ -45,7 +45,7 @@ function convertStringToStats(statsString: string): ToolTableProps['stats'] {
   return stats;
 }
 
-function getDependenciesOfPackage(packageName: keyof typeof devDependencies) {
+function getDependenciesOfPackage(packageName: keyof typeof devDependencies): Record<any, any> {
 	let depName = '';
   if (devDependencies[packageName]) {
     depName = packageName;

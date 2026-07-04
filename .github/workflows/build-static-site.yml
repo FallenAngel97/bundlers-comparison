@@ -1,7 +1,7 @@
 name: Benchmark Bundlers
 
 on:
-  workflow_dispatch:
+  push:
 
 permissions:
   contents: read
