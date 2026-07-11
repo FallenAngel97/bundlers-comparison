@@ -59,6 +59,7 @@ jobs:
 
           cd my-app 
           yarn install --frozen-lockfile 
+          printf '{"date": "%s"}\n' "$(date)" > app/config.json
           yarn build
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
