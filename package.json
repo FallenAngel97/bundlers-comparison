@@ -24,7 +24,7 @@
     "@farmfe/core": "^1.6.7",
     "@farmfe/plugin-react": "^1.2.0",
     "@rollup/plugin-babel": "^6.0.4",
-    "@rollup/plugin-commonjs": "^29.0.0",
+    "@rollup/plugin-commonjs": "^29.0.3",
     "@rollup/plugin-node-resolve": "^16.0.1",
     "@rollup/plugin-replace": "^6.0.2",
     "@rspack/cli": "^1.7.6",
