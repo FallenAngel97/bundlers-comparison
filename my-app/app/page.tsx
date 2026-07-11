@@ -19,6 +19,14 @@ const columns = [
   },
 ];
 
+function computeTotalMetric(stats: ToolTableProps['stats'], key: keyof ToolTableProps['stats'][0]) {
+	let counter = 0;
+	for (let stat of stats) {
+		counter += parseInt(stat[key]);
+	}
+	return counter / stats.length;
+}
+
 const SharedResults = ({ metrics }: { metrics: ToolTableProps[]}) => {
 	return (
 		<table>
@@ -26,6 +34,7 @@ const SharedResults = ({ metrics }: { metrics: ToolTableProps[]}) => {
 				<tr>
 					<th>Name / version</th>
 					<th>Dependencies</th>
+					<th>CPU</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -33,6 +42,7 @@ const SharedResults = ({ metrics }: { metrics: ToolTableProps[]}) => {
 					<tr>
 						<td>{metric.title} {extractVersion(metric.version)}</td>
 						<td>{calculateTotalDeps(metric.dependencies)}</td>
+						<td>{computeTotalMetric(metric.stats, 'cpu')}%</td>
 					</tr>
 				))}
 			</tbody>
