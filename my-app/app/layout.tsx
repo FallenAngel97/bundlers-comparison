@@ -11,7 +11,10 @@ export const metadata: Metadata = {
 		type: 'website',
 	},
 	verification: {
-		google: "k1ip_1w-G4OuVmU8lXpWdA68DbuoKY4xf3YqrS-wN-s"
+		google: "k1ip_1w-G4OuVmU8lXpWdA68DbuoKY4xf3YqrS-wN-s",
+		other: {
+			"msvalidate.01": "A5928E3E14D7EEEF1A8A9504E49480F3"
+		}
 	},
 };
 
