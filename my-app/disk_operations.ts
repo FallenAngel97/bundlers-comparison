@@ -1,17 +1,10 @@
 import { readdirSync, readFileSync } from 'fs';
 import { join } from 'path';
-
 import { devDependencies } from '../package.json';
+import type { ToolTableProps } from './tool-table-props';
 
 const timeDir = join(process.cwd(), "../time");
 const dirContents = readdirSync(timeDir);
-
-export type ToolTableProps = {
-	title: string;
-	dependencies: Record<any, any>;
-	version: string;
-	stats: Record<'cpu'|'ram'|'seconds', string>[]
-}
 
 function findToolVersion(fileName: string) {
   const base = fileName.replace(".log", "").toLowerCase() as keyof typeof devDependencies;
@@ -68,10 +61,4 @@ export const metricsParsed = dirContents.map((file) => {
 	};
 });
 
-
-export function calculateTotalDeps(dependencies: Record<any, any>) {
-	const classicDepsCount = Object.keys(dependencies?.dependencies || {}).length;
-	const devDepsCount = Object.keys(dependencies?.devDependencies || {}).length;
-	return classicDepsCount + devDepsCount;
-}
 
