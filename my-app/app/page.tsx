@@ -4,6 +4,15 @@ import { SingleToolTable } from './single-tool-table';
 import { ComparisonTable } from './comparison-table';
 import { ram, cores, node_version } from './config.json';
 
+const Explanation = () => (
+	<p>
+		On this page you will see the benchmarked JavaScript bundlers which are being launched 
+		towards a simple index.jsx and measured 10 times the execution time, memory used, 
+		and percentage of CPU. Percentage &gt;100% means, that the process is running on 
+		multiple cores of the CPU
+	</p>
+);
+
 export default function Home() {
   return (
     <main style={{ padding: 32 }}>
@@ -23,6 +32,8 @@ export default function Home() {
 					<span id="cpu-cores">{cores}</span>
 				</div>
 			</div>
+
+			<Explanation />
 
       <section className="summaryGrid">
         {metricsParsed.map((metric) => (
