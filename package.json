@@ -30,7 +30,7 @@
     "@rspack/cli": "^1.7.6",
     "@rspack/core": "^1.7.6",
     "babel-loader": "^10.1.1",
-    "esbuild": "^0.27.3",
+    "esbuild": "^0.28.1",
     "parcel": "^2.16.4",
     "rolldown": "^1.1.5",
     "rollup": "^4.62.2",
