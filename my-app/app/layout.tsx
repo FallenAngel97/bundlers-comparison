@@ -8,7 +8,7 @@ import { computeTotalMetric, extractVersion } from "@/view-converters";
 
 export const metadata: Metadata = {
   description: "Detailed analysis of webpack, rspack, esbuild, snowpack, rollup and rolldown. Analysis and benchmarks",
-	title: "Comparison of JavaScript Bundlers",
+	title: `JavaScript Bundlers Performance Comparison ${new Date().getFullYear()} - Vite vs Webpack vs Rollup vs Rspack`,
 	applicationName: "JavaScript Benchmark",
 	verification: {
 		google: "k1ip_1w-G4OuVmU8lXpWdA68DbuoKY4xf3YqrS-wN-s",
