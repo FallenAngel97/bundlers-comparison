@@ -59,7 +59,7 @@ jobs:
 
           cd my-app 
           yarn install --frozen-lockfile 
-          printf '{"date": "%s"}\n' "$(date)" > app/config.json
+          printf '{"date": "%s", "node_version": "%s", "cores": "%s", "ram": "%s"}\n' "$(date)" "$(node -v)" "$(nproc --all)" "$(free -h | awk '/^Mem:/ {print $2}')" > app/config.json
           yarn build
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
