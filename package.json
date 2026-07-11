@@ -29,7 +29,7 @@
     "@rollup/plugin-replace": "^6.0.2",
     "@rspack/cli": "^1.7.6",
     "@rspack/core": "^1.7.6",
-    "babel-loader": "^10.0.0",
+    "babel-loader": "^10.1.1",
     "esbuild": "^0.27.3",
     "parcel": "^2.16.4",
     "rolldown": "^1.0.0-rc.6",
