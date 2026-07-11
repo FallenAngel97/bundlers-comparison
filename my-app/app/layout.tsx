@@ -2,14 +2,14 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { App } from 'antd';
 import { date as generated_time } from './config.json';
+import Script from "next/script"; 
+import { metricsParsed } from '../disk_operations';
+import { computeTotalMetric, extractVersion } from "@/view-converters";
 
 export const metadata: Metadata = {
   description: "Detailed analysis of webpack, rspack, esbuild, snowpack, rollup and rolldown. Analysis and benchmarks",
 	title: "Comparison of JavaScript Bundlers",
 	applicationName: "JavaScript Benchmark",
-	openGraph: {
-		type: 'website',
-	},
 	verification: {
 		google: "k1ip_1w-G4OuVmU8lXpWdA68DbuoKY4xf3YqrS-wN-s",
 		other: {
@@ -23,9 +23,75 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+	const datasetSchema = {
+		"@context": "https://schema.org",
+		"@type": "Dataset",
+		"name": "JavaScript Bundler Benchmark Results",
+		"description": "Performance measurements of JavaScript bundlers.",
+		"creator": {
+			"@type": "Organization",
+			"name": "DeCODE"
+		},
+		"variableMeasured": [
+			"Build time",
+			"Memory usage",
+			"Bundle size",
+			"CPU usage"
+		]
+	}
+
+	const comparisonSchema = {
+		"@context": "https://schema.org",
+		"@type": "ItemList",
+		"name": "JavaScript Bundlers Comparison",
+		"description": "Comparison of JavaScript bundlers including build speed, bundle size, and features.",
+		"itemListElement": metricsParsed.map((metrics, index) => (
+			{
+				"@type": "ListItem",
+				"position": index,
+				"item": {
+					"@type": "SoftwareApplication",
+					"name": metrics.title.replace(".log", ""),
+					"applicationCategory": "DeveloperApplication",
+					"operatingSystem": "Cross-platform",
+					"softwareVersion": extractVersion(metrics.version),
+					"additionalProperty": [
+						{
+							"@type": "PropertyValue",
+							"name": "Build time",
+							"value": computeTotalMetric(metrics.stats, "seconds")
+						},
+						{
+							"@type": "PropertyValue",
+							"name": "CPU Usage",
+							"value": computeTotalMetric(metrics.stats, "cpu")
+						},
+						{
+							"@type": "PropertyValue",
+							"name": "Language",
+							"value": "JavaScript"
+						}
+					]
+				}
+			}
+		))
+	}
+
   return (
     <html lang="en">
       <body>
+				<Script
+						id="jsonld-dataset"
+						type="application/ld+json"
+						strategy="beforeInteractive"
+						dangerouslySetInnerHTML={{ __html: JSON.stringify(datasetSchema) }}
+					/>
+				<Script
+						id="jsonld-dataset"
+						type="application/ld+json"
+						strategy="beforeInteractive"
+						dangerouslySetInnerHTML={{ __html: JSON.stringify(comparisonSchema) }}
+					/>
 				<App>
 				 <a
 						href="https://github.com/FallenAngel97/bundlers-comparison"
