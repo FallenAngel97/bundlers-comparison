@@ -2,6 +2,9 @@ name: Benchmark Bundlers
 
 on:
   push:
+    branches:
+      - master
+  pull_request:
 
 permissions:
   contents: read
@@ -65,10 +68,59 @@ jobs:
         uses: actions/upload-pages-artifact@v3
         with:
           path: ./my-app/out  
+      - name: Upload benchmark logs
+        uses: actions/upload-artifact@v4
+        with:
+          name: benchmark-logs
+          path: time/
 
+  checks:
+    name: Required Checks for Automerge
+    needs: benchmark
+    if: github.event_name == 'pull_request' && (github.actor == 'dependabot[bot]' || startsWith(github.head_ref, 'dependabot/'))
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download benchmark logs
+        uses: actions/download-artifact@v4
+        with:
+          name: benchmark-logs
+          path: time/
+
+      - name: Verify log iterations
+        shell: bash
+        run: |
+          EXIT_CODE=0
+
+          # Count the number of .log files in the time directory
+          file_count=$(ls -1 time/*.log 2>/dev/null | wc -l)
+          
+          echo "Found $file_count log files."
+          if [ "$file_count" -ne 8 ]; then
+            echo "❌ Error: Expected exactly 8 log files, but found $file_count."
+            exit 1
+          fi
+          
+          for logfile in time/*.log; do
+            echo "Checking $logfile..."
+            
+            # Count occurrences of the metric keys
+            ram_count=$(grep -c "Peak RAM:" "$logfile" || true)
+            cpu_count=$(grep -c "CPU Load:" "$logfile" || true)
+            time_count=$(grep -c "Seconds:" "$logfile" || true)
+            
+            if [ "$ram_count" -ne 10 ] || [ "$cpu_count" -ne 10 ] || [ "$time_count" -ne 10 ]; then
+              echo "❌ Error: $logfile does not have exactly 10 iterations (RAM: $ram_count, CPU: $cpu_count, Time: $time_count)"
+              EXIT_CODE=1
+            else
+              echo "✅ $logfile passed verification."
+            fi
+          done
+          
+          exit $EXIT_CODE
 
   deploy:
     needs: benchmark
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
