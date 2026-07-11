@@ -27,7 +27,7 @@
     "@rollup/plugin-commonjs": "^29.0.3",
     "@rollup/plugin-node-resolve": "^16.0.1",
     "@rollup/plugin-replace": "^6.0.2",
-    "@rspack/cli": "^1.7.6",
+    "@rspack/cli": "^1.7.12",
     "@rspack/core": "^1.7.6",
     "babel-loader": "^10.1.1",
     "esbuild": "^0.28.1",
