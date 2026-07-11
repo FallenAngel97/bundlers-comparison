@@ -118,6 +118,20 @@ jobs:
           
           exit $EXIT_CODE
 
+  automerge:
+    name: Enable Automerge for Dependabot
+    needs: checks
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+      contents: write
+    steps:
+      - name: Enable auto-merge using GitHub CLI
+        run: gh pr merge --auto --squash "$PR_URL"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_URL: ${{ github.event.pull_request.html_url }}
+
   deploy:
     needs: benchmark
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
