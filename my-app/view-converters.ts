@@ -17,7 +17,7 @@ export function computeTotalMetric(
   return Number((total / stats.length).toFixed(2));
 }
 
-function parseMetricValue(value: string | number) {
+export function parseMetricValue(value: string | number) {
   if (typeof value === "number") {
     return value;
   }

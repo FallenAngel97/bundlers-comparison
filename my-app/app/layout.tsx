@@ -27,7 +27,7 @@ export default function RootLayout({
 		"@context": "https://schema.org",
 		"@type": "Dataset",
 		"name": "JavaScript Bundler Benchmark Results",
-		"description": "Performance measurements of JavaScript bundlers.",
+		"description": `Detailed analysis of modern JavaScript bundlers ${new Date().getFullYear()}. Benchmark is updated automatically with Dependabot and Github Actions and is up-to-date with the latest bundlers. Contains the charts for the visibility comparison for RAM, CPU usage and how much time is required to build with each bundler`,
 		"creator": {
 			"@type": "Organization",
 			"name": "DeCODE"
