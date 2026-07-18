@@ -32,7 +32,7 @@
     "babel-loader": "^10.1.1",
     "esbuild": "^0.28.1",
     "parcel": "^2.16.4",
-    "rolldown": "^1.1.5",
+    "rolldown": "^1.2.0",
     "rollup": "^4.62.2",
     "rollup-plugin-terser": "^7.0.2",
     "serve": "^14.2.6",
