@@ -3,13 +3,14 @@ import { SummaryCard } from './summary-card';
 import { SingleToolTable } from './single-tool-table';
 import { ComparisonTable } from './comparison-table';
 import { ram, cores, node_version } from './config.json';
+import { InsightsBlock } from './summary-insights';
 
 const Explanation = () => (
 	<p>
 		On this page you will see the benchmarked JavaScript bundlers which are being launched 
 		towards a simple index.jsx and measured 10 times the execution time, memory used, 
 		and percentage of CPU. Percentage &gt;100% means, that the process is running on 
-		multiple cores of the CPU.
+		multiple cores of the CPU. Github Runner is <i>ubuntu-latest</i>.
 	</p>
 );
 
@@ -52,6 +53,7 @@ export default function Home() {
           <SingleToolTable key={metric.title} {...metric} />
         ))}
       </section>
+			<InsightsBlock data={metricsParsed} />
     </main>
   );
 }
