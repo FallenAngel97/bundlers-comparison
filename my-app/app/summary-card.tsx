@@ -1,39 +1,58 @@
 import { Card, Statistic } from "antd";
-import { ToolTableProps } from '../tool-table-props';
-import { extractVersion, calculateTotalDeps, computeTotalMetric } from '../view-converters';
-
+import { ToolTableProps } from "../tool-table-props";
+import {
+	extractVersion,
+	calculateTotalDeps,
+	computeTotalMetric,
+} from "../view-converters";
+import { iconsPath } from "./icons";
+import Image from "next/image";
 
 interface SummaryCardProps {
-  metric: ToolTableProps;
+	metric: ToolTableProps;
 }
 
 export function SummaryCard({ metric }: SummaryCardProps) {
-  return (
-    <Card
-      title={`${metric.title.replace(".log", "")} ${extractVersion(metric.version)}`}
-    >
-      <Statistic
-        title="Dependencies"
-        value={calculateTotalDeps(metric.dependencies)}
-      />
+	const name = metric.title.replace(".log", "") as keyof typeof iconsPath;
+	const iconSrc = iconsPath[name];
 
-      <Statistic
-        title="Average CPU"
-        value={computeTotalMetric(metric.stats, "cpu")}
-        suffix="%"
-      />
+	return (
+		<Card
+			title={
+				<div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+					{iconSrc && (
+						<Image
+							style={{ width: "20px", height: "20px", objectFit: "contain" }}
+							src={iconSrc}
+							alt={`${name} logo`}
+						/>
+					)}
+					<span>{`${name} ${extractVersion(metric.version)}`}</span>
+				</div>
+			}
+		>
+			<Statistic
+				title="Dependencies"
+				value={calculateTotalDeps(metric.dependencies)}
+			/>
 
-      <Statistic
-        title="Average RAM"
-        value={computeTotalMetric(metric.stats, "ram")}
-        suffix=" MB"
-      />
+			<Statistic
+				title="Average CPU"
+				value={computeTotalMetric(metric.stats, "cpu")}
+				suffix="%"
+			/>
 
-      <Statistic
-        title="Average Time"
-        value={computeTotalMetric(metric.stats, "seconds")}
-        suffix=" s"
-      />
-    </Card>
-  );
+			<Statistic
+				title="Average RAM"
+				value={computeTotalMetric(metric.stats, "ram")}
+				suffix=" MB"
+			/>
+
+			<Statistic
+				title="Average Time"
+				value={computeTotalMetric(metric.stats, "seconds")}
+				suffix=" s"
+			/>
+		</Card>
+	);
 }

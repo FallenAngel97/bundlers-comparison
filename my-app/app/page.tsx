@@ -9,7 +9,7 @@ const Explanation = () => (
 		On this page you will see the benchmarked JavaScript bundlers which are being launched 
 		towards a simple index.jsx and measured 10 times the execution time, memory used, 
 		and percentage of CPU. Percentage &gt;100% means, that the process is running on 
-		multiple cores of the CPU
+		multiple cores of the CPU.
 	</p>
 );
 
