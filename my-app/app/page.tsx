@@ -4,14 +4,16 @@ import { SingleToolTable } from './single-tool-table';
 import { ComparisonTable } from './comparison-table';
 import { ram, cores, node_version } from './config.json';
 import { InsightsBlock } from './summary-insights';
+import { Alert } from 'antd';
 
 const Explanation = () => (
-	<p>
+	<div>
 		On this page you will see the benchmarked JavaScript bundlers which are being launched 
 		towards a simple index.jsx and measured 10 times the execution time, memory used, 
-		and percentage of CPU. Percentage &gt;100% means, that the process is running on 
-		multiple cores of the CPU. Github Runner is <i>ubuntu-latest</i>.
-	</p>
+		and percentage of CPU. Github Runner is <i>ubuntu-latest</i>.
+
+		<Alert title="💡 Understanding CPU Metrics" description="A CPU utilization score exceeding 100% indicates multi-core execution on the Linux benchmark environment. For instance, a 200% reading means the process fully utilized the processing capacity of 2 parallel CPU cores during execution. " type="info" />
+	</div>
 );
 
 export default function Home() {
