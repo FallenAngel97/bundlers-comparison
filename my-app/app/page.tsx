@@ -2,39 +2,16 @@ import { metricsParsed } from '../disk_operations';
 import { SummaryCard } from './summary-card';
 import { SingleToolTable } from './single-tool-table';
 import { ComparisonTable } from './comparison-table';
-import { ram, cores, node_version } from './config.json';
 import { InsightsBlock } from './summary-insights';
-import { Alert } from 'antd';
-
-const Explanation = () => (
-	<div>
-		On this page you will see the benchmarked JavaScript bundlers which are being launched 
-		towards a simple index.jsx and measured 10 times the execution time, memory used, 
-		and percentage of CPU. Github Runner is <i>ubuntu-latest</i>.
-
-		<Alert title="💡 Understanding CPU Metrics" description="A CPU utilization score exceeding 100% indicates multi-core execution on the Linux benchmark environment. For instance, a 200% reading means the process fully utilized the processing capacity of 2 parallel CPU cores during execution. " type="info" />
-	</div>
-);
+import { Explanation } from './explanation';
+import { EnvironmentBanner } from './environment-banner';
+import { ArchitectureComparison } from './architecture-comparison';
 
 export default function Home() {
   return (
     <main style={{ padding: 32 }}>
       <h1>Comparison of JavaScript Bundlers</h1>
-
-			<div id="environment-banner" className="environment-banner">
-				<div>
-					<span className="label">Node.js</span>
-					<span id="node-version">{node_version}</span>
-				</div>
-				<div>
-					<span className="label">RAM</span>
-					<span id="ram-size">{ram}</span>
-				</div>
-				<div>
-					<span className="label">CPU Cores</span>
-					<span id="cpu-cores">{cores}</span>
-				</div>
-			</div>
+			<EnvironmentBanner />
 
 			<Explanation />
 
@@ -55,6 +32,7 @@ export default function Home() {
           <SingleToolTable key={metric.title} {...metric} />
         ))}
       </section>
+			<ArchitectureComparison />
 			<InsightsBlock data={metricsParsed} />
     </main>
   );
