@@ -53,7 +53,7 @@ export function ArchitectureComparison() {
   ];
 
   return (
-    <>
+    <section>
       <Title level={3} style={{ marginTop: 40, marginBottom: 16 }}>Architecture Comparison</Title>
       <Table 
         columns={comparisonColumns} 
@@ -62,6 +62,6 @@ export function ArchitectureComparison() {
         bordered
         style={{ marginBottom: 24 }}
       />
-    </>
+    </section>
   );
 }

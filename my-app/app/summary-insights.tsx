@@ -58,7 +58,7 @@ export const InsightsBlock = ({ data }: InsightsBlockProps) => {
 
       <Row gutter={[16, 16]} style={{ marginBottom: 20 }}>
         <Col xs={24} sm={8}>
-          <Card size="small" bordered={false} style={{ background: '#f6ffed', border: '1px solid #b7eb8f' }}>
+          <Card size="small" style={{ background: '#f6ffed', border: '1px solid #b7eb8f' }}>
             <Statistic
               title="Speed Champion (Avg Time)"
               value={fastestTool.avgTime}
@@ -70,7 +70,7 @@ export const InsightsBlock = ({ data }: InsightsBlockProps) => {
         </Col>
         
         <Col xs={24} sm={8}>
-          <Card size="small" bordered={false} style={{ background: '#e6f4ff', border: '1px solid #91caff' }}>
+          <Card size="small" style={{ background: '#e6f4ff', border: '1px solid #91caff' }}>
             <Statistic
               title="Lowest Memory Ceiling"
               value={lightestRamTool.avgRam}
@@ -82,7 +82,7 @@ export const InsightsBlock = ({ data }: InsightsBlockProps) => {
         </Col>
 
         <Col xs={24} sm={8}>
-          <Card size="small" bordered={false} style={{ background: '#fff7e6', border: '1px solid #ffd591' }}>
+          <Card size="small" style={{ background: '#fff7e6', border: '1px solid #ffd591' }}>
             <Statistic
               title="Lightest Dependency Footprint"
               value={minimalistTool.totalDeps}
