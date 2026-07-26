@@ -17,7 +17,7 @@ export const metadata: Metadata = {
 		description,
 		title,
 		type: "article",
-		images: [{ url: "/bundlers-comparison/opengraph.png" }],
+		images: [{ url: "https://fallenangel97.github.io/bundlers-comparison/opengraph.png" }],
 	},
   description,
 	title,
