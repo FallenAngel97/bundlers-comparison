@@ -1,6 +1,7 @@
 import { readdirSync, readFileSync } from 'fs';
 import { join } from 'path';
 import { devDependencies } from '../package.json';
+import { bun_version, deno_version } from './app/config.json';
 import type { ToolTableProps } from './tool-table-props';
 
 const nodeTimeDir = join(process.cwd(), "../time_node");
@@ -70,7 +71,7 @@ export const bunMetricsParsed = bunDirContents.map((file) => {
 	let version = '';
 	let dependencies = {};
 	if (file.indexOf('bun') > -1) {
-		version = '1.4.0';
+		version = bun_version;
 		dependencies = {};
 	} else {
 		version = findToolVersion(file),
@@ -88,7 +89,7 @@ export const denoMetricsParsed = denoDirContents.map((file) => {
 	let version = '';
 	let dependencies = {};
 	if (file.indexOf('deno') > -1) {
-		version = 'deno 2.9.6';
+		version = deno_version;
 		dependencies = {};
 	} else {
 		version = findToolVersion(file),
