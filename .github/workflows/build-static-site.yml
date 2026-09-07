@@ -97,7 +97,7 @@ jobs:
             if [[ "$SCRIPT" == "build:parcel" ]]; then
               echo "Adding Parcel source field to package.json"
               jq '. + {source: "index.html"}' package.json > package.tmp.json
-              mv package.tmp.json package.json
+              yes | mv package.tmp.json package.json
             fi
 
             touch time_deno/$LOG.log
