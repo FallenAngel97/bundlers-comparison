@@ -3,8 +3,13 @@ import { join } from 'path';
 import { devDependencies } from '../package.json';
 import type { ToolTableProps } from './tool-table-props';
 
-const timeDir = join(process.cwd(), "../node-time");
-const dirContents = readdirSync(timeDir);
+const nodeTimeDir = join(process.cwd(), "../time_node");
+const bunTimeDir = join(process.cwd(), "../time_bun");
+const denoTimeDir = join(process.cwd(), "../time_deno");
+
+const nodeDirContents = readdirSync(nodeTimeDir);
+const bunDirContents = readdirSync(bunTimeDir);
+const denoDirContents = readdirSync(denoTimeDir);
 
 function findToolVersion(fileName: string) {
   const base = fileName.replace(".log", "").toLowerCase() as keyof typeof devDependencies;
@@ -52,13 +57,47 @@ function getDependenciesOfPackage(packageName: keyof typeof devDependencies): Re
 	return dependencyPackageJSON;
 }
 
-export const metricsParsed = dirContents.map((file) => {
+export const nodeMetricsParsed = nodeDirContents.map((file) => {
 	return {
 		title: file,
 		version: findToolVersion(file),
 		dependencies: getDependenciesOfPackage(file.replace(".log", "") as keyof typeof devDependencies),
-		stats: convertStringToStats(readFileSync('../node-time/' + file).toString())
+		stats: convertStringToStats(readFileSync('../time_node/' + file).toString())
 	};
 });
 
+export const bunMetricsParsed = bunDirContents.map((file) => {
+	let version = '';
+	let dependencies = {};
+	if (file.indexOf('bun') > -1) {
+		version = '1.4.0';
+		dependencies = {};
+	} else {
+		version = findToolVersion(file),
+		dependencies = getDependenciesOfPackage(file.replace(".log", "") as keyof typeof devDependencies);
+	}
+	return {
+		title: file,
+		version,
+		dependencies,
+		stats: convertStringToStats(readFileSync('../time_bun/' + file).toString())
+	}
+});
 
+export const denoMetricsParsed = denoDirContents.map((file) => {
+	let version = '';
+	let dependencies = {};
+	if (file.indexOf('deno') > -1) {
+		version = 'deno 2.9.6';
+		dependencies = {};
+	} else {
+		version = findToolVersion(file),
+		dependencies = getDependenciesOfPackage(file.replace(".log", "") as keyof typeof devDependencies);
+	}
+	return {
+		title: file,
+		version,
+		dependencies,
+		stats: convertStringToStats(readFileSync('../time_deno/' + file).toString())
+	}
+});

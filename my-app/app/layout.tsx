@@ -3,7 +3,7 @@ import "./globals.css";
 import { App } from 'antd';
 import { date as generated_time } from './config.json';
 import Script from "next/script"; 
-import { metricsParsed } from '../disk_operations';
+import { nodeMetricsParsed } from '../disk_operations';
 import { computeTotalMetric, extractVersion } from "@/view-converters";
 
 const description = "Detailed analysis of webpack, rspack, esbuild, snowpack, rollup and rolldown. Analysis and benchmarks";
@@ -57,7 +57,7 @@ export default function RootLayout({
 		"@type": "ItemList",
 		"name": "JavaScript Bundlers Comparison",
 		"description": "Comparison of JavaScript bundlers including build speed, bundle size, and features.",
-		"itemListElement": metricsParsed.map((metrics, index) => (
+		"itemListElement": nodeMetricsParsed.map((metrics, index) => (
 			{
 				"@type": "ListItem",
 				"position": index,

@@ -24,7 +24,7 @@ jobs:
 
       - run: yarn install --frozen-lockfile
 
-      - run: mkdir -p time
+      - run: mkdir -p time_node
 
       - name: Run all bundler benchmarks
         shell: bash
@@ -33,14 +33,14 @@ jobs:
             SCRIPT=$1
             LOG=$2
 
-            touch time/$LOG.log
+            touch time_node/$LOG.log
             for i in {1..10}; do
               /usr/bin/time -v yarn $SCRIPT 2>&1 | awk '
                 /Maximum resident set size/ {ram=$6/1024}
                 /Elapsed \(wall clock\) time/ {seconds=$0; sub(/.*: /,"",seconds)}
                 /Percent of CPU this job got/ {cpu=$0; sub(/.*: /,"",cpu)}
                 END {printf "Peak RAM: %.2f MB\nCPU Load: %s\nSeconds: %s\n", ram, cpu, seconds}' \
-                >> "time/$LOG.log"
+                >> "time_node/$LOG.log"
             done
           }
 
@@ -57,7 +57,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: benchmark-logs
-          path: time/
+          path: time_node/
 
   benchmark-deno:
     runs-on: ubuntu-latest
@@ -157,22 +157,22 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: benchmark-logs
-          path: node-time/
+          path: time_node/
       - name: Download deno benchmark logs
         uses: actions/download-artifact@v4
         with:
           name: deno-benchmark-logs
-          path: deno-time/
+          path: time_deno/
       - name: Download bun benchmark logs
         uses: actions/download-artifact@v4
         with:
           name: bun-benchmark-logs
-          path: bun-time/
+          path: time_bun/
       - run: |
           yarn install --frozen-lockfile
           cd my-app 
           yarn install --frozen-lockfile 
-          printf '{"date": "%s", "node_version": "%s", "cores": "%s", "ram": "%s"}\n' "$(date)" "$(node -v)" "$(nproc --all)" "$(free -h | awk '/^Mem:/ {print $2}')" > app/config.json
+          printf '{"date": "%s", "node_version": "%s", "deno_version": "%s", "bun_version": "%s", "cores": "%s", "ram": "%s"}\n' "$(date)" "$(node -v)" "$(deno -V)" "$(bun --version)" "$(nproc --all)" "$(free -h | awk '/^Mem:/ {print $2}')" > app/config.json
           yarn build
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

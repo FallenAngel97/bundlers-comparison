@@ -2,4 +2,6 @@
 dist
 build
 node_modules
-time
+time_node
+time_deno
+time_bun
