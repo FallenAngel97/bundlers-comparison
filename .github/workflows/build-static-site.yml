@@ -100,7 +100,7 @@ jobs:
               mv package.tmp.json package.json
             fi
 
-            touch time/$LOG.log
+            touch time_deno/$LOG.log
             for i in {1..10}; do
               /usr/bin/time -v deno run $SCRIPT 2>&1 | awk '
                 /Maximum resident set size/ {ram=$6/1024}
@@ -120,10 +120,6 @@ jobs:
           run_benchmark build:snowpack snowpack
           run_benchmark build:rolldown rolldown
 
-          cd my-app 
-          yarn install --frozen-lockfile 
-          printf '{"date": "%s", "node_version": "%s", "cores": "%s", "ram": "%s"}\n' "$(date)" "$(node -v)" "$(nproc --all)" "$(free -h | awk '/^Mem:/ {print $2}')" > app/config.json
-      
 
 
   checks:
