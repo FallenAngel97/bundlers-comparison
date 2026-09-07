@@ -176,7 +176,7 @@ jobs:
           yarn install --frozen-lockfile
           cd my-app 
           yarn install --frozen-lockfile 
-          printf '{"date": "%s", "node_version": "%s", "deno_version": "%s", "bun_version": "%s", "cores": "%s", "ram": "%s"}\n' "$(date)" "$(node -v)" "$(deno -V)" "$(bun --version)" "$(nproc --all)" "$(free -h | awk '/^Mem:/ {print $2}')" > app/config.json
+          printf '{"date": "%s", "node_version": "%s", "deno_version": "%s", "bun_version": "%s", "cores": "%s", "ram": "%s"}\n' "$(date)" "$(node -v)" "$(deno -V | sed 's/deno //')" "$(bun --version)" "$(nproc --all)" "$(free -h | awk '/^Mem:/ {print $2}')" > app/config.json
           yarn build
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
