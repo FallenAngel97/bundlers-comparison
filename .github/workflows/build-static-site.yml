@@ -86,6 +86,8 @@ jobs:
             SCRIPT=$1
             LOG=$2
 
+            echo $LOG
+
             touch time_deno/$LOG.log
             for i in {1..10}; do
               /usr/bin/time -v deno run $SCRIPT 2>&1 | awk '
@@ -106,7 +108,16 @@ jobs:
           run_benchmark build:snowpack snowpack
           run_benchmark build:rolldown rolldown
 
-
+  compile-app:
+    needs: [benchmark-node, benchmark-deno]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download benchmark logs
+        uses: actions/download-artifact@v4
+        with:
+          name: benchmark-logs
+          path: node-time/
+      - run: ls -la
 
   checks:
     name: Required Checks for Automerge
@@ -167,7 +178,7 @@ jobs:
           PR_URL: ${{ github.event.pull_request.html_url }}
 
   deploy:
-    needs: [benchmark-node, benchmark-deno]
+    needs: compile-app
     if: github.event_name == 'push' && github.ref == 'refs/heads/master'
     environment:
       name: github-pages
