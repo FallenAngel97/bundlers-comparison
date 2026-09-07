@@ -168,6 +168,10 @@ jobs:
         with:
           name: bun-benchmark-logs
           path: time_bun/
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+      - uses: oven-sh/setup-bun@v2  
       - run: |
           yarn install --frozen-lockfile
           cd my-app 
