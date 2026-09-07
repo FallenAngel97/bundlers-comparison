@@ -2,6 +2,7 @@
   "name": "bundlers-comparison",
   "version": "1.0.0",
   "license": "'",
+  "source": "index.html",
   "scripts": {
     "build:webpack": "webpack",
     "build:rollup": "rollup -c",
