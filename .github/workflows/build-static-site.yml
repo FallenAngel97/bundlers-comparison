@@ -12,7 +12,7 @@ permissions:
   id-token: write
 
 jobs:
-  benchmark:
+  benchmark-node:
     runs-on: ubuntu-latest
 
     steps:
@@ -74,9 +74,61 @@ jobs:
           name: benchmark-logs
           path: time/
 
+  benchmark-deno:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+
+      - run: deno install
+
+      - run: mkdir -p time_deno
+      - name: Run all bundler benchmarks
+        shell: bash
+        run: |
+          run_benchmark() {
+            SCRIPT=$1
+            LOG=$2
+
+            # Parcel needs "source": "index.html"
+            if [[ "$SCRIPT" == "build:parcel" ]]; then
+              echo "Adding Parcel source field to package.json"
+              jq '. + {source: "index.html"}' package.json > package.tmp.json
+              mv package.tmp.json package.json
+            fi
+
+            touch time/$LOG.log
+            for i in {1..10}; do
+              /usr/bin/time -v deno run $SCRIPT 2>&1 | awk '
+                /Maximum resident set size/ {ram=$6/1024}
+                /Elapsed \(wall clock\) time/ {seconds=$0; sub(/.*: /,"",seconds)}
+                /Percent of CPU this job got/ {cpu=$0; sub(/.*: /,"",cpu)}
+                END {printf "Peak RAM: %.2f MB\nCPU Load: %s\nSeconds: %s\n", ram, cpu, seconds}' \
+                >> "time_deno/$LOG.log"
+            done
+          }
+
+          run_benchmark build:esbuild esbuild
+          run_benchmark build:rollup rollup
+          run_benchmark build:webpack webpack
+          run_benchmark build:farm farm
+          run_benchmark build:rspack rspack
+          run_benchmark build:parcel parcel
+          run_benchmark build:snowpack snowpack
+          run_benchmark build:rolldown rolldown
+
+          cd my-app 
+          yarn install --frozen-lockfile 
+          printf '{"date": "%s", "node_version": "%s", "cores": "%s", "ram": "%s"}\n' "$(date)" "$(node -v)" "$(nproc --all)" "$(free -h | awk '/^Mem:/ {print $2}')" > app/config.json
+      
+
+
   checks:
     name: Required Checks for Automerge
-    needs: benchmark
+    needs: benchmark-node
     if: github.event_name == 'pull_request' && (github.actor == 'dependabot[bot]' || startsWith(github.head_ref, 'dependabot/'))
     runs-on: ubuntu-latest
     steps:
@@ -133,7 +185,7 @@ jobs:
           PR_URL: ${{ github.event.pull_request.html_url }}
 
   deploy:
-    needs: benchmark
+    needs: [benchmark-node, benchmark-deno]
     if: github.event_name == 'push' && github.ref == 'refs/heads/master'
     environment:
       name: github-pages
