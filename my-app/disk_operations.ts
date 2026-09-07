@@ -57,7 +57,7 @@ export const metricsParsed = dirContents.map((file) => {
 		title: file,
 		version: findToolVersion(file),
 		dependencies: getDependenciesOfPackage(file.replace(".log", "") as keyof typeof devDependencies),
-		stats: convertStringToStats(readFileSync('../time/' + file).toString())
+		stats: convertStringToStats(readFileSync('../node-time/' + file).toString())
 	};
 });
 

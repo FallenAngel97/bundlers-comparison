@@ -107,8 +107,49 @@ jobs:
           name: deno-benchmark-logs
           path: time_deno/
 
+  benchmark-bun:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2  
+      - run: bun install 
+      - run: mkdir -p time_bun
+      - name: Run all bundler benchmarks
+        shell: bash
+        run: |
+          run_benchmark() {
+            SCRIPT=$1
+            LOG=$2
+
+            touch time_bun/$LOG.log
+            for i in {1..10}; do
+              /usr/bin/time -v bun run $SCRIPT 2>&1 | awk '
+                /Maximum resident set size/ {ram=$6/1024}
+                /Elapsed \(wall clock\) time/ {seconds=$0; sub(/.*: /,"",seconds)}
+                /Percent of CPU this job got/ {cpu=$0; sub(/.*: /,"",cpu)}
+                END {printf "Peak RAM: %.2f MB\nCPU Load: %s\nSeconds: %s\n", ram, cpu, seconds}' \
+                >> "time_bun/$LOG.log"
+            done
+          }
+
+          run_benchmark build:esbuild esbuild
+          run_benchmark build:rollup rollup
+          run_benchmark build:webpack webpack
+          run_benchmark build:farm farm
+          run_benchmark build:rspack rspack
+          run_benchmark build:parcel parcel
+          run_benchmark build:rolldown rolldown
+          run_benchmark build:bun_native bun
+
+      - name: Upload benchmark logs
+        uses: actions/upload-artifact@v4
+        with:
+          name: bun-benchmark-logs
+          path: time_bun/
+
+
   compile-app:
-    needs: [benchmark-node, benchmark-deno]
+    needs: [benchmark-node, benchmark-deno, benchmark-bun]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -122,6 +163,11 @@ jobs:
         with:
           name: deno-benchmark-logs
           path: deno-time/
+      - name: Download bun benchmark logs
+        uses: actions/download-artifact@v4
+        with:
+          name: bun-benchmark-logs
+          path: bun-time/
       - run: |
           ls -la
           yarn install --frozen-lockfile

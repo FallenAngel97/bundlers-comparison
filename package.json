@@ -12,7 +12,8 @@
     "build:parcel": "parcel build",
     "build:snowpack": "snowpack build --polyfill-node",
     "build:rolldown": "rolldown -c",
-    "build:deno_native": "deno bundle src/index.jsx > dist/deno-bundle.js"
+    "build:deno_native": "deno bundle src/index.jsx > dist/deno-bundle.js",
+    "build:bun_native": "bun build ./src/index.jsx --outfile=dist/bun-bundle.js"
   },
   "dependencies": {
     "react": "^19.2.8",
