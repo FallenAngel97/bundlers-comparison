@@ -80,6 +80,9 @@ jobs:
 
             touch time_deno/$LOG.log
             for i in {1..10}; do
+              if [[ "$SCRIPT" == "build:deno_native" ]]; then
+                rm -rf dist/deno-bundle.js # remove the file outside of the benchmark
+              fi
               /usr/bin/time -v deno run $SCRIPT 2>&1 | awk '
                 /Maximum resident set size/ {ram=$6/1024}
                 /Elapsed \(wall clock\) time/ {seconds=$0; sub(/.*: /,"",seconds)}
@@ -96,11 +99,13 @@ jobs:
           run_benchmark build:rspack rspack
           run_benchmark build:parcel parcel
           run_benchmark build:rolldown rolldown
+          run_benchmark build:deno_native deno
+
       - name: Upload benchmark logs
         uses: actions/upload-artifact@v4
         with:
           name: deno-benchmark-logs
-          path: time/
+          path: time_deno/
 
   compile-app:
     needs: [benchmark-node, benchmark-deno]
