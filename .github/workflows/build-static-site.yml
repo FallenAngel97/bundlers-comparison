@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - uses: actions/setup-node@v4
         with:
@@ -62,7 +62,7 @@ jobs:
   benchmark-deno:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - uses: denoland/setup-deno@v2
         with:
@@ -110,7 +110,7 @@ jobs:
   benchmark-bun:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: oven-sh/setup-bun@v2  
       - run: bun install 
       - run: mkdir -p time_bun
@@ -152,7 +152,7 @@ jobs:
     needs: [benchmark-node, benchmark-deno, benchmark-bun]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Download node benchmark logs
         uses: actions/download-artifact@v4
         with:
@@ -169,7 +169,6 @@ jobs:
           name: bun-benchmark-logs
           path: bun-time/
       - run: |
-          ls -la
           yarn install --frozen-lockfile
           cd my-app 
           yarn install --frozen-lockfile 
