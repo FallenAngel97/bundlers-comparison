@@ -105,7 +105,6 @@ jobs:
           run_benchmark build:farm farm
           run_benchmark build:rspack rspack
           run_benchmark build:parcel parcel
-          run_benchmark build:snowpack snowpack
           run_benchmark build:rolldown rolldown
 
   compile-app:
