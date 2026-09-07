@@ -3,7 +3,7 @@ import { join } from 'path';
 import { devDependencies } from '../package.json';
 import type { ToolTableProps } from './tool-table-props';
 
-const timeDir = join(process.cwd(), "../time");
+const timeDir = join(process.cwd(), "../node-time");
 const dirContents = readdirSync(timeDir);
 
 function findToolVersion(fileName: string) {
