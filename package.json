@@ -16,7 +16,7 @@
     "build:bun_native": "bun build ./src/index.jsx --outfile=dist/bun-bundle.js"
   },
   "dependencies": {
-    "react": "^19.2.8",
+    "react": "^19.3.0",
     "react-dom": "^19.2.8"
   },
   "devDependencies": {
