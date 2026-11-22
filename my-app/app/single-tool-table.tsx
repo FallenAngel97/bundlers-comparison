@@ -28,10 +28,11 @@ export const SingleToolTable = ({
   stats,
   version,
   dependencies,
-}: ToolTableProps) => {
+  commandPrefix = "build",
+}: ToolTableProps & { commandPrefix?: string }) => {
   const toolName = title.replace(".log", "").toLowerCase();
   
-  const scriptKey = `build:${toolName}` as keyof typeof pkg.scripts;
+  const scriptKey = `${commandPrefix}:${toolName}` as keyof typeof pkg.scripts;
   const commandUsed = pkg.scripts[scriptKey] || "Command not found";
 
   return (

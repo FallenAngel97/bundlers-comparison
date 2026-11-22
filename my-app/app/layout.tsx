@@ -6,6 +6,7 @@ import Script from "next/script";
 import { nodeMetricsParsed } from '../disk_operations';
 import { computeTotalMetric, extractVersion } from "@/view-converters";
 import { RuntimeTabs } from "./runtime-tab";
+import { ProjectTabs } from "./project-tabs";
 
 const description = "Detailed analysis of webpack, rspack, esbuild, snowpack, rollup and rolldown. Analysis and benchmarks";
 const title = `JavaScript Bundlers Performance Comparison ${new Date().getFullYear()} - Vite vs Webpack vs Rollup vs Rspack`;
@@ -117,6 +118,7 @@ export default function RootLayout({
 				</header>
 				<main>
 				<App>
+					<ProjectTabs />
 					<RuntimeTabs />
 					{children}
 					<footer>

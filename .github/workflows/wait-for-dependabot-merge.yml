@@ -1,0 +1,42 @@
+name: Wait for Dependabot merge
+
+on:
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: Dependabot pull request number
+        required: true
+        type: number
+
+permissions:
+  actions: write
+  pull-requests: read
+
+jobs:
+  wait-and-dispatch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    steps:
+      - name: Wait for merge, then run benchmarks on master
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          PR_NUMBER: ${{ inputs.pr_number }}
+        run: |
+          while true; do
+            pr=$(gh pr view "$PR_NUMBER" --json state,mergedAt)
+            state=$(jq -r '.state' <<< "$pr")
+            merged_at=$(jq -r '.mergedAt // empty' <<< "$pr")
+
+            if [[ -n "$merged_at" ]]; then
+              gh workflow run build-static-site.yml --ref master
+              exit 0
+            fi
+
+            if [[ "$state" == "CLOSED" ]]; then
+              echo "Pull request #$PR_NUMBER was closed without being merged."
+              exit 0
+            fi
+
+            sleep 30
+          done

@@ -3,7 +3,7 @@ import { defineConfig } from '@farmfe/core';
 export default defineConfig({
 	compilation: {
     input: {
-      index: './src/index.js'
+      index: './src/index.jsx'
     },
 		comments: false,
     output: {
@@ -27,4 +27,3 @@ export default defineConfig({
 		['@farmfe/plugin-react', { runtime: "automatic" }]
 	]
 });
-

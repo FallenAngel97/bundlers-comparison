@@ -17,12 +17,19 @@ interface RuntimeViewProps {
     stats: ToolTableProps["stats"];
   }>;
   runtimeName: "Node.js" | "Bun" | "Deno";
+  projectName?: "Simple project" | "Complex project";
+  commandPrefix?: string;
 }
 
-export function RuntimeView({ metrics, runtimeName }: RuntimeViewProps) {
+export function RuntimeView({
+  metrics,
+  runtimeName,
+  projectName = "Simple project",
+  commandPrefix = "build",
+}: RuntimeViewProps) {
   return (
     <main style={{ padding: 32 }}>
-      <h1>Comparison of JavaScript Bundlers ({runtimeName})</h1>
+      <h1>Comparison of JavaScript Bundlers ({projectName})</h1>
       <EnvironmentBanner runtimeName={runtimeName} />
       <Explanation />
 
@@ -39,7 +46,7 @@ export function RuntimeView({ metrics, runtimeName }: RuntimeViewProps) {
 
       <section className="toolGrid">
         {metrics.map((metric) => (
-          <SingleToolTable key={metric.title} {...metric} />
+          <SingleToolTable key={metric.title} {...metric} commandPrefix={commandPrefix} />
         ))}
       </section>
 

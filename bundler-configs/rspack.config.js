@@ -2,7 +2,7 @@ const path = require("path");
 const TerserPlugin = require("terser-webpack-plugin");
 
 module.exports = {
-	entry: "./src/index.jsx",
+	entry: path.resolve(__dirname, "../src/index.jsx"),
 	mode: "production",
 	optimization: {
     minimize: true,
@@ -24,6 +24,6 @@ module.exports = {
 	},
 	output: {
 		filename: "rspack-bundle.js",
-		path: path.resolve(__dirname, "dist"),
+		path: path.resolve(__dirname, "../dist"),
 	},
 };

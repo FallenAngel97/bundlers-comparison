@@ -7,6 +7,10 @@ export function RuntimeTabs() {
   const router = useRouter();
   const pathname = usePathname();
 
+  if (pathname === "/complex") {
+    return null;
+  }
+
   // Determine current active tab key from URL
   const activeKey = pathname === "/bun" ? "bun" : pathname === "/deno" ? "deno" : "node";
 

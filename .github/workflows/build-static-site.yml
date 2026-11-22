@@ -5,6 +5,7 @@ on:
     branches:
       - master
   pull_request:
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -147,9 +148,51 @@ jobs:
           name: bun-benchmark-logs
           path: time_bun/
 
+  benchmark-complex:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          submodules: recursive
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: yarn install --frozen-lockfile
+      - name: Install Excalidraw dependencies
+        working-directory: excalidraw
+        run: yarn install --frozen-lockfile
+      - run: mkdir -p time_complex
+      - name: Run complex project benchmarks
+        shell: bash
+        run: |
+          run_benchmark() {
+            SCRIPT=$1
+            LOG=$2
+
+            : > "time_complex/$LOG.log"
+            for i in {1..10}; do
+              /usr/bin/time -v yarn "$SCRIPT" 2>&1 | awk '
+                /Maximum resident set size/ {ram=$6/1024}
+                /Elapsed \(wall clock\) time/ {seconds=$0; sub(/.*: /,"",seconds)}
+                /Percent of CPU this job got/ {cpu=$0; sub(/.*: /,"",cpu)}
+                END {printf "Peak RAM: %.2f MB\nCPU Load: %s\nSeconds: %s\n", ram, cpu, seconds}' \
+                >> "time_complex/$LOG.log"
+            done
+          }
+
+          run_benchmark build:complex:vite vite
+          run_benchmark build:complex:webpack webpack
+          run_benchmark build:complex:rollup rollup
+          run_benchmark build:complex:rolldown rolldown
+      - name: Upload complex benchmark logs
+        uses: actions/upload-artifact@v4
+        with:
+          name: complex-benchmark-logs
+          path: time_complex/
+
 
   compile-app:
-    needs: [benchmark-node, benchmark-deno, benchmark-bun]
+    needs: [benchmark-node, benchmark-deno, benchmark-bun, benchmark-complex]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
@@ -168,6 +211,11 @@ jobs:
         with:
           name: bun-benchmark-logs
           path: time_bun/
+      - name: Download complex benchmark logs
+        uses: actions/download-artifact@v4
+        with:
+          name: complex-benchmark-logs
+          path: time_complex/
       - uses: denoland/setup-deno@v2
         with:
           deno-version: v2.x
@@ -234,16 +282,20 @@ jobs:
     permissions:
       pull-requests: write
       contents: write
+      actions: write
     steps:
       - name: Enable auto-merge using GitHub CLI
-        run: gh pr merge --auto --squash "$PR_URL"
+        run: |
+          gh pr merge --auto --squash "$PR_URL"
+          gh workflow run wait-for-dependabot-merge.yml --ref master --field pr_number="$PR_NUMBER"
         env:
-          GH_TOKEN: ${{ secrets.AUTOMERGE_TOKEN }}
+          GH_TOKEN: ${{ github.token }}
           PR_URL: ${{ github.event.pull_request.html_url }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
 
   deploy:
     needs: compile-app
-    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    if: (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/master'
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
