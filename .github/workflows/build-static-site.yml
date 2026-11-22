@@ -21,7 +21,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
 
       - run: yarn install --frozen-lockfile
 
@@ -156,7 +156,7 @@ jobs:
           submodules: recursive
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
       - run: yarn install --frozen-lockfile
       - name: Install Excalidraw dependencies
         working-directory: excalidraw
