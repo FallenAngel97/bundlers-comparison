@@ -34,14 +34,26 @@ jobs:
             SCRIPT=$1
             LOG=$2
 
-            touch time_node/$LOG.log
+            : > "time_node/$LOG.log"
             for i in {1..10}; do
-              /usr/bin/time -v yarn $SCRIPT 2>&1 | awk '
+              echo "Running $SCRIPT (iteration $i/10)..."
+              set +e
+              /usr/bin/time -v yarn "$SCRIPT" > /tmp/bench_out.log 2>&1
+              EXIT_CODE=$?
+              set -e
+
+              if [ "$EXIT_CODE" -ne 0 ]; then
+                echo "❌ Command failed: yarn $SCRIPT (exit code: $EXIT_CODE)"
+                cat /tmp/bench_out.log
+                exit "$EXIT_CODE"
+              fi
+
+              awk '
                 /Maximum resident set size/ {ram=$6/1024}
                 /Elapsed \(wall clock\) time/ {seconds=$0; sub(/.*: /,"",seconds)}
                 /Percent of CPU this job got/ {cpu=$0; sub(/.*: /,"",cpu)}
                 END {printf "Peak RAM: %.2f MB\nCPU Load: %s\nSeconds: %s\n", ram, cpu, seconds}' \
-                >> "time_node/$LOG.log"
+                /tmp/bench_out.log >> "time_node/$LOG.log"
             done
           }
 
